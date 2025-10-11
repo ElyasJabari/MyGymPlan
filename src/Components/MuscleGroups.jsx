@@ -16,18 +16,18 @@ export default function MuscleGroups() {
   console.log("### Muskel gruppe: ", muscleGroups);
 
   const handelAdd = () => {
-    setMuscleGroups([
-      ...muscleGroups,
-      {
-        id: muscleGroups[muscleGroups.length - 1].id + 1,
-        name: newMuscleGroup,
-      },
-    ]);
+    const newId =
+      muscleGroups.length > 0
+        ? muscleGroups[muscleGroups.length - 1].id + 1
+        : 1;
+
+    setMuscleGroups([...muscleGroups, { id: newId, name: newMuscleGroup }]);
     setNewMuscleGroup("");
   };
 
   return (
     <div>
+      <p>Verwalte deine Trainingsbereiche</p>
       <ul>
         <input
           type="text"
@@ -36,6 +36,7 @@ export default function MuscleGroups() {
           value={newMuscleGroup}
         />
         <button onClick={handelAdd}>Hinzufügen</button>
+        <button onClick={() => setMuscleGroups([])}>Alle Löschen</button>
         {muscleGroups.map((m) => (
           <div key={m.id}>
             <li>{m.name}</li>

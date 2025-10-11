@@ -3,7 +3,7 @@ export default function Header() {
     <div>
       <h1>Willkommen bei My Gym Plan</h1>
       <h2>
-        Hier können Sie Muskelgruppen erstellen und darin einzelne Übungen mit
+        Hier kannst du Muskelgruppen erstellen und darin einzelne Übungen mit
         Eigenschaften hinzufügen.
       </h2>
     </div>
