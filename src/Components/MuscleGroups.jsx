@@ -18,7 +18,10 @@ export default function MuscleGroups() {
   const handelAdd = () => {
     setMuscleGroups([
       ...muscleGroups,
-      { id: muscleGroups.length + 1, name: newMuscleGroup },
+      {
+        id: muscleGroups[muscleGroups.length - 1].id + 1,
+        name: newMuscleGroup,
+      },
     ]);
     setNewMuscleGroup("");
   };
@@ -32,9 +35,18 @@ export default function MuscleGroups() {
           onChange={(e) => setNewMuscleGroup(e.target.value)}
           value={newMuscleGroup}
         />
-        <button onClick={handelAdd}>hinzufügen</button>
+        <button onClick={handelAdd}>Hinzufügen</button>
         {muscleGroups.map((m) => (
-          <li key={m.id}>{m.name}</li>
+          <div key={m.id}>
+            <li>{m.name}</li>
+            <button
+              onClick={() => {
+                setMuscleGroups(muscleGroups.filter((f) => f.id !== m.id));
+              }}
+            >
+              Löschen
+            </button>
+          </div>
         ))}
       </ul>
     </div>
