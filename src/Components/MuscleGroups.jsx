@@ -12,17 +12,35 @@ export default function MuscleGroups() {
     { id: 8, name: "Sonstiges" },
   ]);
   const [newMuscleGroup, setNewMuscleGroup] = useState("");
+  const [changName, setChangeName] = useState();
 
   console.log("### Muskel gruppe: ", muscleGroups);
 
   const handelAdd = () => {
-    const newId =
-      muscleGroups.length > 0
-        ? muscleGroups[muscleGroups.length - 1].id + 1
-        : 1;
+    if (changName) {
+      setMuscleGroups(
+        muscleGroups.map((m) =>
+          m.id === changName ? { ...m, name: newMuscleGroup } : m
+        )
+      );
+      setChangeName(null);
+    } else {
+      const newId =
+        muscleGroups.length > 0
+          ? muscleGroups[muscleGroups.length - 1].id + 1
+          : 1;
 
-    setMuscleGroups([...muscleGroups, { id: newId, name: newMuscleGroup }]);
+      setMuscleGroups([...muscleGroups, { id: newId, name: newMuscleGroup }]);
+    }
     setNewMuscleGroup("");
+  };
+
+  const handleChangeName = (name, id) => {
+    console.log("### aktuele name: ", name);
+    console.log("### aktuele id: ", id);
+
+    setChangeName(id);
+    setNewMuscleGroup(name);
   };
 
   return (
@@ -40,6 +58,9 @@ export default function MuscleGroups() {
         {muscleGroups.map((m) => (
           <div key={m.id}>
             <li>{m.name}</li>
+            <button onClick={() => handleChangeName(m.name, m.id)}>
+              Bearbeiten
+            </button>
             <button
               onClick={() => {
                 setMuscleGroups(muscleGroups.filter((f) => f.id !== m.id));
