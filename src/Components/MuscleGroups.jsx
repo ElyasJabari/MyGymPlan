@@ -13,7 +13,9 @@ export default function MuscleGroups() {
   ]);
   const [newMuscleGroup, setNewMuscleGroup] = useState("");
   const [changName, setChangeName] = useState();
+  const [draggedMuscleGroup, setDraggedMuscleGroup] = useState();
 
+  console.log("### draggedMuscleGroup: ", draggedMuscleGroup);
   console.log("### Muskel gruppe: ", muscleGroups);
 
   const handelAdd = () => {
@@ -43,6 +45,28 @@ export default function MuscleGroups() {
     setNewMuscleGroup(name);
   };
 
+  const handleDragStart = (index) => {
+    setDraggedMuscleGroup(index);
+  };
+
+  const handleOnDragOver = (e) => {
+    e.preventDefault();
+    console.log("### funktionier over: ");
+  };
+
+  const handleOnDrop = (index) => {
+    const copieArray = [...muscleGroups];
+    const [update] = copieArray.splice(draggedMuscleGroup, 1);
+
+    copieArray.splice(index, 0, update);
+    console.log(
+      "### Nach Einfügen:",
+      copieArray.map((m) => m.name)
+    );
+    setMuscleGroups(copieArray);
+    setDraggedMuscleGroup(null);
+  };
+
   return (
     <div>
       <p>Verwalte deine Trainingsbereiche</p>
@@ -55,8 +79,14 @@ export default function MuscleGroups() {
         />
         <button onClick={handelAdd}>Hinzufügen</button>
         <button onClick={() => setMuscleGroups([])}>Alle Löschen</button>
-        {muscleGroups.map((m) => (
-          <div key={m.id}>
+        {muscleGroups.map((m, index) => (
+          <div
+            key={m.id}
+            draggable
+            onDragStart={() => handleDragStart(index)}
+            onDragOver={handleOnDragOver}
+            onDrop={() => handleOnDrop(index)}
+          >
             <li>{m.name}</li>
             <button onClick={() => handleChangeName(m.name, m.id)}>
               Bearbeiten
