@@ -1,4 +1,7 @@
 import { useState } from "react";
+import Exercises from "./Exercises";
+import { Link } from "react-router-dom";
+import Header from "./Header";
 
 export default function MuscleGroups() {
   const [muscleGroups, setMuscleGroups] = useState([
@@ -69,6 +72,7 @@ export default function MuscleGroups() {
 
   return (
     <div>
+      <Header />
       <p>Verwalte deine Trainingsbereiche</p>
       <ul>
         <input
@@ -87,7 +91,9 @@ export default function MuscleGroups() {
             onDragOver={handleOnDragOver}
             onDrop={() => handleOnDrop(index)}
           >
-            <li>{m.name}</li>
+            <li>
+              <Link to={`/exercises/${m.name}`}>{m.name}</Link>
+            </li>
             <button onClick={() => handleChangeName(m.name, m.id)}>
               Bearbeiten
             </button>
