@@ -10,8 +10,8 @@ export default function Exercises() {
     return saved
       ? JSON.parse(saved)
       : [
-          { id: 1, name: "Lattzug", weight: 27, set: 3 },
-          { id: 2, name: "Rudern", weight: 2, set: 4 },
+          { id: 1, name: "Lattzug", weight: 27, set: 3, katagorie: name },
+          { id: 2, name: "Rudern", weight: 2, set: 4, katagorie: name },
         ];
   });
   useEffect(() => {
@@ -33,7 +33,13 @@ export default function Exercises() {
 
     setExercises([
       ...exercises,
-      { id: newId, name: excercisName, weight: exercisWeight, set: exercisSet },
+      {
+        id: newId,
+        name: excercisName,
+        weight: exercisWeight,
+        set: exercisSet,
+        katagorie: name,
+      },
     ]);
     setIsOpen(false);
   };
@@ -44,18 +50,22 @@ export default function Exercises() {
       <button onClick={() => setIsOpen(true)}>Übung Hinzufügen</button>
       <button onClick={() => setExercises([])}>Alle Löschen</button>
 
-      {exercises.map((e) => (
-        <ul key={e.id}>
-          <li>{e.name}</li>
-          <button
-            onClick={() => {
-              setExercises(exercises.filter((f) => f.id !== e.id));
-            }}
-          >
-            Löschen
-          </button>
-        </ul>
-      ))}
+      {exercises
+        .filter((e) => e.katagorie === name)
+        .map((e) => (
+          <ul key={e.id}>
+            <li>
+              {e.name} Gewicht:{e.weight} Wiederholung:{e.set}
+            </li>
+            <button
+              onClick={() => {
+                setExercises(exercises.filter((f) => f.id !== e.id));
+              }}
+            >
+              Löschen
+            </button>
+          </ul>
+        ))}
 
       {isOpen && (
         <div className="modal-overlay" onClick={() => setIsOpen(false)}>
