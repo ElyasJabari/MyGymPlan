@@ -1,13 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../Index.css";
 
 export default function Exercises() {
   const { name } = useParams();
-  const [exercises, setExercises] = useState([
-    { id: 1, name: "Lattzug", weight: 27, set: 3 },
-    { id: 2, name: "Rudern", weight: 2, set: 4 },
-  ]);
+
+  const [exercises, setExercises] = useState(() => {
+    const saved = localStorage.getItem("exercises");
+    return saved
+      ? JSON.parse(saved)
+      : [
+          { id: 1, name: "Lattzug", weight: 27, set: 3 },
+          { id: 2, name: "Rudern", weight: 2, set: 4 },
+        ];
+  });
+  useEffect(() => {
+    localStorage.setItem("exercises", JSON.stringify(exercises));
+  }, [exercises]);
+
   const [isOpen, setIsOpen] = useState(false);
   const [excercisName, setExercisName] = useState("");
   const [exercisWeight, setExercisWeight] = useState("");
@@ -32,6 +42,7 @@ export default function Exercises() {
     <div>
       <h2>Klicke auf den Button, um eine Übung für {name} hinzuzufügen.</h2>
       <button onClick={() => setIsOpen(true)}>Übung Hinzufügen</button>
+      <button onClick={() => setExercises([])}>Alle Löschen</button>
 
       {exercises.map((e) => (
         <ul key={e.id}>
@@ -53,7 +64,6 @@ export default function Exercises() {
               X
             </button>
 
-            <input type="Number" placeholder="Id" />
             <input
               type="text"
               placeholder="Neue Übung"
