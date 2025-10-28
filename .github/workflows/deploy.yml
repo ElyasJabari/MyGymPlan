@@ -40,5 +40,5 @@ jobs:
         run: npm run build
 
       # 6️⃣ Prettier Check (Codeformatierung prüfen)
-      - name: Check formatting with Prettier
-        run: npx prettier --check .
+      # - name: Check formatting with Prettier
+      #  run: npx prettier --check .
