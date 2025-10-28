@@ -1,0 +1,44 @@
+name: React Vite CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Repository-Code auschecken
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Node.js einrichten
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # 3️⃣ Dependencies installieren
+      - name: Install dependencies
+        run: npm ci
+
+      # 4️⃣ Branch-Name prüfen (muss mit "feature/" anfangen, außer main)
+      - name: Check branch naming convention
+        if: ${{ github.ref_type == 'branch' && github.ref_name != 'main' }}
+        run: |
+          if [[ ! "${{ github.ref_name }}" =~ ^feature/ ]]; then
+            echo "❌ Branch-Name '${{ github.ref_name }}' ist ungültig. Er muss mit 'feature/' beginnen."
+            exit 1
+          fi
+        shell: bash
+
+      # 5️⃣ Build-Test
+      - name: Build project
+        run: npm run build
+
+      # 6️⃣ Prettier Check (Codeformatierung prüfen)
+      - name: Check formatting with Prettier
+        run: npx prettier --check .
