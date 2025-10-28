@@ -22,26 +22,60 @@ export default function Exercises() {
   const [excercisName, setExercisName] = useState("");
   const [exercisWeight, setExercisWeight] = useState("");
   const [exercisSet, setExercisSet] = useState("");
+  const [tempExercisId, setTempExercisId] = useState();
 
   console.log("### Exercises: ", exercises);
 
   const handelAdd = () => {
     console.log("### ExercisesName: ", excercisName);
 
-    const newId =
-      exercises.length > 0 ? exercises[exercises.length - 1].id + 1 : 1;
+    if (tempExercisId) {
+      setExercises(
+        exercises.map((e) =>
+          e.id === tempExercisId
+            ? {
+                ...e,
+                name: excercisName,
+                weight: exercisWeight,
+                set: exercisSet,
+              }
+            : e
+        )
+      );
+      setTempExercisId(null);
+    } else {
+      const newId =
+        exercises.length > 0 ? exercises[exercises.length - 1].id + 1 : 1;
 
-    setExercises([
-      ...exercises,
-      {
-        id: newId,
-        name: excercisName,
-        weight: exercisWeight,
-        set: exercisSet,
-        katagorie: name,
-      },
-    ]);
+      setExercises([
+        ...exercises,
+        {
+          id: newId,
+          name: excercisName,
+          weight: exercisWeight,
+          set: exercisSet,
+          katagorie: name,
+        },
+      ]);
+    }
+    setExercisName("");
+    setExercisWeight("");
+    setExercisSet("");
+
     setIsOpen(false);
+  };
+
+  const handleChangeName = (id, name, weight, set) => {
+    console.log("### id: ", id);
+    console.log("### name: ", name);
+    console.log("### weight: ", weight);
+    console.log("### set: ", set);
+
+    setTempExercisId(id);
+    setExercisName(name);
+    setExercisWeight(weight);
+    setExercisSet(set);
+    setIsOpen(true);
   };
 
   return (
@@ -57,6 +91,11 @@ export default function Exercises() {
             <li>
               {e.name} Gewicht:{e.weight} Wiederholung:{e.set}
             </li>
+            <button
+              onClick={() => handleChangeName(e.id, e.name, e.weight, e.set)}
+            >
+              Bearbeiten
+            </button>
             <button
               onClick={() => {
                 setExercises(exercises.filter((f) => f.id !== e.id));
@@ -78,16 +117,19 @@ export default function Exercises() {
               type="text"
               placeholder="Neue Übung"
               onChange={(e) => setExercisName(e.target.value)}
+              value={excercisName}
             />
             <input
               type="Number"
               placeholder="Gewicht"
               onChange={(e) => setExercisWeight(e.target.value)}
+              value={exercisWeight}
             />
             <input
               type="number"
               placeholder="Wiederholung"
               onChange={(e) => setExercisSet(e.target.value)}
+              value={exercisSet}
             />
 
             <button onClick={handelAdd}>Hinzufügen</button>
