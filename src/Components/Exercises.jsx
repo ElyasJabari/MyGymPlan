@@ -23,6 +23,7 @@ export default function Exercises() {
   const [exercisWeight, setExercisWeight] = useState("");
   const [exercisSet, setExercisSet] = useState("");
   const [tempExercisId, setTempExercisId] = useState();
+  const [draggedExercises, setDraggedExercises] = useState(null);
 
   console.log("### Exercises: ", exercises);
 
@@ -78,6 +79,35 @@ export default function Exercises() {
     setIsOpen(true);
   };
 
+  const dragStart = (id) => {
+    console.log("### start: ", id);
+    setDraggedExercises(id);
+  };
+
+  const dragOver = (e) => {
+    e.preventDefault();
+    console.log("### drag over");
+  };
+
+  const drop = (index) => {
+    console.log("### drop", index);
+
+    const tempArray = [...exercises];
+
+    const fromIndex = tempArray.findIndex((f) => f.id === draggedExercises);
+    console.log("### fromIndex : ", fromIndex);
+
+    const toIndex = tempArray.findIndex((f) => f.id === index);
+    console.log("### toIndex : ", toIndex);
+
+    const [updated] = tempArray.splice(fromIndex, 1);
+    tempArray.splice(toIndex, 0, updated);
+
+    setExercises(tempArray);
+    setDraggedExercises(null);
+    console.log("### nach drop: ", exercises);
+  };
+
   return (
     <div>
       <h2>Klicke auf den Button, um eine Übung für {name} hinzuzufügen.</h2>
@@ -88,7 +118,12 @@ export default function Exercises() {
         .filter((e) => e.katagorie === name)
         .map((e) => (
           <ul key={e.id}>
-            <li>
+            <li
+              draggable
+              onDragStart={() => dragStart(e.id)}
+              onDragOver={dragOver}
+              onDrop={() => drop(e.id)}
+            >
               {e.name} Gewicht:{e.weight} Wiederholung:{e.set}
             </li>
             <button
