@@ -66,6 +66,10 @@ export default function Exercises() {
     setIsOpen(false);
   };
 
+  const deleteAll = () => {
+    setExercises(exercises.filter((e) => e.katagorie !== name));
+  };
+
   const handleChangeName = (id, name, weight, set) => {
     console.log("### id: ", id);
     console.log("### name: ", name);
@@ -93,15 +97,8 @@ export default function Exercises() {
     console.log("### drop", index);
 
     const tempArray = [...exercises];
-
-    const fromIndex = tempArray.findIndex((f) => f.id === draggedExercises);
-    console.log("### fromIndex : ", fromIndex);
-
-    const toIndex = tempArray.findIndex((f) => f.id === index);
-    console.log("### toIndex : ", toIndex);
-
-    const [updated] = tempArray.splice(fromIndex, 1);
-    tempArray.splice(toIndex, 0, updated);
+    const [updated] = tempArray.splice(draggedExercises, 1);
+    tempArray.splice(index, 0, updated);
 
     setExercises(tempArray);
     setDraggedExercises(null);
@@ -112,34 +109,37 @@ export default function Exercises() {
     <div>
       <h2>Klicke auf den Button, um eine Übung für {name} hinzuzufügen.</h2>
       <button onClick={() => setIsOpen(true)}>Übung Hinzufügen</button>
-      <button onClick={() => setExercises([])}>Alle Löschen</button>
+      <button onClick={deleteAll}>Alle Löschen</button>
 
       {exercises
         .filter((e) => e.katagorie === name)
-        .map((e) => (
-          <ul key={e.id}>
-            <li
-              draggable
-              onDragStart={() => dragStart(e.id)}
-              onDragOver={dragOver}
-              onDrop={() => drop(e.id)}
-            >
-              {e.name} Gewicht:{e.weight} Wiederholung:{e.set}
-            </li>
-            <button
-              onClick={() => handleChangeName(e.id, e.name, e.weight, e.set)}
-            >
-              Bearbeiten
-            </button>
-            <button
-              onClick={() => {
-                setExercises(exercises.filter((f) => f.id !== e.id));
-              }}
-            >
-              Löschen
-            </button>
-          </ul>
-        ))}
+        .map((e) => {
+          const globalIndex = exercises.findIndex((ex) => ex.id === e.id);
+          return (
+            <ul key={e.id}>
+              <li
+                draggable
+                onDragStart={() => dragStart(globalIndex)}
+                onDragOver={dragOver}
+                onDrop={() => drop(globalIndex)}
+              >
+                {e.name} Gewicht:{e.weight} Wiederholung:{e.set}
+              </li>
+              <button
+                onClick={() => handleChangeName(e.id, e.name, e.weight, e.set)}
+              >
+                Bearbeiten
+              </button>
+              <button
+                onClick={() => {
+                  setExercises(exercises.filter((f) => f.id !== e.id));
+                }}
+              >
+                Löschen
+              </button>
+            </ul>
+          );
+        })}
 
       {isOpen && (
         <div className="modal-overlay" onClick={() => setIsOpen(false)}>
