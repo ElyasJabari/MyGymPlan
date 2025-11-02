@@ -2,6 +2,7 @@ import { useState } from "react";
 import Exercises from "./Exercises";
 import { Link } from "react-router-dom";
 import Header from "./Header";
+import "./MuscleGroups.css";
 
 export default function MuscleGroups() {
   const [muscleGroups, setMuscleGroups] = useState([
@@ -71,42 +72,69 @@ export default function MuscleGroups() {
   };
 
   return (
-    <div>
+    <div className="app-container">
       <Header />
-      <p>Verwalte deine Trainingsbereiche</p>
-      <ul>
-        <input
-          type="text"
-          placeholder="Neue Muskelgruppe..."
-          onChange={(e) => setNewMuscleGroup(e.target.value)}
-          value={newMuscleGroup}
-        />
-        <button onClick={handelAdd}>Hinzufügen</button>
-        <button onClick={() => setMuscleGroups([])}>Alle Löschen</button>
-        {muscleGroups.map((m, index) => (
-          <div
-            key={m.id}
-            draggable
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={handleOnDragOver}
-            onDrop={() => handleOnDrop(index)}
+      <div className="content">
+        <p>Verwalte deine Trainingsbereiche</p>
+        <div className="input-group">
+          <input
+            type="text"
+            placeholder="Neue Muskelgruppe..."
+            onChange={(e) => setNewMuscleGroup(e.target.value)}
+            value={newMuscleGroup}
+          />
+          <button className="btn btn-primary" onClick={handelAdd}>
+            Hinzufügen
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={() => setMuscleGroups([])}
           >
-            <li>
-              <Link to={`/exercises/${m.name}`}>{m.name}</Link>
-            </li>
-            <button onClick={() => handleChangeName(m.name, m.id)}>
-              Bearbeiten
-            </button>
-            <button
-              onClick={() => {
-                setMuscleGroups(muscleGroups.filter((f) => f.id !== m.id));
-              }}
+            Alle Löschen
+          </button>
+        </div>
+        <ul className="muscle-groups-list">
+          {muscleGroups.map((m, index) => (
+            <div
+              key={m.id}
+              className="muscle-group-item"
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={handleOnDragOver}
+              onDrop={() => handleOnDrop(index)}
             >
-              Löschen
-            </button>
-          </div>
-        ))}
-      </ul>
+              <div className="muscle-group-content">
+                <div className="muscle-group-main">
+                  <Link
+                    className="muscle-group-link"
+                    to={`/exercises/${m.name}`}
+                  >
+                    {m.name}
+                  </Link>
+                  <div className="action-buttons">
+                    <button
+                      className="btn-edit"
+                      onClick={() => handleChangeName(m.name, m.id)}
+                    >
+                      Bearbeiten
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => {
+                        setMuscleGroups(
+                          muscleGroups.filter((f) => f.id !== m.id)
+                        );
+                      }}
+                    >
+                      Löschen
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
