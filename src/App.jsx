@@ -7,6 +7,7 @@ import Exercises from "./Components/Exercises";
 function App() {
   return (
     <>
+      <h1>Hier ist App</h1>
       <Routes>
         <Route path="/" element={<MuscleGroups />} />
         <Route path="/exercises/:name" element={<Exercises />} />
