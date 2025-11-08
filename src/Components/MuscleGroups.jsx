@@ -1,23 +1,34 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Exercises from "./Exercises";
 import { Link } from "react-router-dom";
 import Header from "./Header";
 import "./MuscleGroups.css";
 
 export default function MuscleGroups() {
-  const [muscleGroups, setMuscleGroups] = useState([
-    { id: 1, name: "Beine" },
-    { id: 2, name: "Po" },
-    { id: 3, name: "Rücken" },
-    { id: 4, name: "Brust" },
-    { id: 5, name: "schulter" },
-    { id: 6, name: "Arme" },
-    { id: 7, name: "Bauch" },
-    { id: 8, name: "Sonstiges" },
-  ]);
+  const [muscleGroups, setMuscleGroups] = useState(() => {
+    const saved = localStorage.getItem("muscleGroups");
+    return saved
+      ? JSON.parse(saved)
+      : [
+          { id: 1, name: "Beine" },
+          { id: 2, name: "Po" },
+          { id: 3, name: "Rücken" },
+          { id: 4, name: "Brust" },
+          { id: 5, name: "Schulter" },
+          { id: 6, name: "Arme" },
+          { id: 7, name: "Bauch" },
+          { id: 8, name: "Sonstiges" },
+        ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("muscleGroups", JSON.stringify(muscleGroups));
+  }, [muscleGroups]);
+
   const [newMuscleGroup, setNewMuscleGroup] = useState("");
   const [changName, setChangeName] = useState();
   const [draggedMuscleGroup, setDraggedMuscleGroup] = useState();
+  const inputRef = useRef(null);
 
   console.log("### draggedMuscleGroup: ", draggedMuscleGroup);
   console.log("### Muskel gruppe: ", muscleGroups);
@@ -47,6 +58,12 @@ export default function MuscleGroups() {
 
     setChangeName(id);
     setNewMuscleGroup(name);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 300);
   };
 
   const handleDragStart = (index) => {
@@ -78,13 +95,14 @@ export default function MuscleGroups() {
         <p>Verwalte deine Trainingsbereiche</p>
         <div className="input-group">
           <input
+            ref={inputRef}
             type="text"
             placeholder="Neue Muskelgruppe..."
             onChange={(e) => setNewMuscleGroup(e.target.value)}
             value={newMuscleGroup}
           />
           <button className="btn btn-primary" onClick={handelAdd}>
-            Hinzufügen
+            {changName ? "Speichern" : "Hinzufügen"}
           </button>
           <button
             className="btn btn-danger"

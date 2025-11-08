@@ -106,6 +106,14 @@ export default function Exercises() {
     console.log("### nach drop: ", exercises);
   };
 
+  const closeModal = () => {
+    setIsOpen(false);
+    setExercisName("");
+    setExercisWeight("");
+    setExercisSet("");
+    setTempExercisId(null);
+  };
+
   return (
     <div className="exercise-container">
       <div className="exercise-header">
@@ -174,9 +182,9 @@ export default function Exercises() {
       </div>
 
       {isOpen && (
-        <div className="modal-overlay" onClick={() => setIsOpen(false)}>
+        <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setIsOpen(false)} className="close-btn">
+            <button onClick={closeModal} className="close-btn">
               X
             </button>
 
@@ -205,7 +213,7 @@ export default function Exercises() {
               className="exercise-btn exercise-btn-primary"
               onClick={handelAdd}
             >
-              Hinzufügen
+              {tempExercisId ? "Speicher" : "Hinzufügen"}
             </button>
           </div>
         </div>
