@@ -1,24 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "../Index.css";
 import "./Exercises.css";
 
 export default function Exercises() {
   const { name } = useParams();
-
   const [exercises, setExercises] = useState(() => {
     const saved = localStorage.getItem("exercises");
     return saved
       ? JSON.parse(saved)
-      : [
-          { id: 1, name: "Lattzug", weight: 27, set: 3, katagorie: name },
-          { id: 2, name: "Rudern", weight: 2, set: 4, katagorie: name },
-        ];
+      : [{ id: 1, name: "Beinpresse", weight: 27, set: 3, katagorie: name }];
   });
-  useEffect(() => {
-    localStorage.setItem("exercises", JSON.stringify(exercises));
-  }, [exercises]);
-
   const [isOpen, setIsOpen] = useState(false);
   const [excercisName, setExercisName] = useState("");
   const [exercisWeight, setExercisWeight] = useState("");
@@ -26,11 +17,11 @@ export default function Exercises() {
   const [tempExercisId, setTempExercisId] = useState();
   const [draggedExercises, setDraggedExercises] = useState(null);
 
-  console.log("### Exercises: ", exercises);
+  useEffect(() => {
+    localStorage.setItem("exercises", JSON.stringify(exercises));
+  }, [exercises]);
 
   const handelAdd = () => {
-    console.log("### ExercisesName: ", excercisName);
-
     if (tempExercisId) {
       setExercises(
         exercises.map((e) =>
@@ -48,7 +39,6 @@ export default function Exercises() {
     } else {
       const newId =
         exercises.length > 0 ? exercises[exercises.length - 1].id + 1 : 1;
-
       setExercises([
         ...exercises,
         {
@@ -63,7 +53,6 @@ export default function Exercises() {
     setExercisName("");
     setExercisWeight("");
     setExercisSet("");
-
     setIsOpen(false);
   };
 
@@ -72,11 +61,6 @@ export default function Exercises() {
   };
 
   const handleChangeName = (id, name, weight, set) => {
-    console.log("### id: ", id);
-    console.log("### name: ", name);
-    console.log("### weight: ", weight);
-    console.log("### set: ", set);
-
     setTempExercisId(id);
     setExercisName(name);
     setExercisWeight(weight);
@@ -85,25 +69,19 @@ export default function Exercises() {
   };
 
   const dragStart = (id) => {
-    console.log("### start: ", id);
     setDraggedExercises(id);
   };
 
   const dragOver = (e) => {
     e.preventDefault();
-    console.log("### drag over");
   };
 
   const drop = (index) => {
-    console.log("### drop", index);
-
     const tempArray = [...exercises];
     const [updated] = tempArray.splice(draggedExercises, 1);
     tempArray.splice(index, 0, updated);
-
     setExercises(tempArray);
     setDraggedExercises(null);
-    console.log("### nach drop: ", exercises);
   };
 
   const closeModal = () => {
@@ -117,7 +95,7 @@ export default function Exercises() {
   return (
     <div className="exercise-container">
       <div className="exercise-header">
-        <h2>Klicke auf den Button, um eine Übung für {name} hinzuzufügen.</h2>
+        <h2>Hier kannst du eine Übung für {name} hinzuzufügen.</h2>
         <div className="exercise-actions">
           <button
             className="exercise-btn exercise-btn-primary"

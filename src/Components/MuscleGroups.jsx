@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import Exercises from "./Exercises";
 import { Link } from "react-router-dom";
 import Header from "./Header";
 import "./MuscleGroups.css";
@@ -20,18 +19,14 @@ export default function MuscleGroups() {
           { id: 8, name: "Sonstiges" },
         ];
   });
-
-  useEffect(() => {
-    localStorage.setItem("muscleGroups", JSON.stringify(muscleGroups));
-  }, [muscleGroups]);
-
   const [newMuscleGroup, setNewMuscleGroup] = useState("");
   const [changName, setChangeName] = useState();
   const [draggedMuscleGroup, setDraggedMuscleGroup] = useState();
   const inputRef = useRef(null);
 
-  console.log("### draggedMuscleGroup: ", draggedMuscleGroup);
-  console.log("### Muskel gruppe: ", muscleGroups);
+  useEffect(() => {
+    localStorage.setItem("muscleGroups", JSON.stringify(muscleGroups));
+  }, [muscleGroups]);
 
   const handelAdd = () => {
     if (changName) {
@@ -46,21 +41,16 @@ export default function MuscleGroups() {
         muscleGroups.length > 0
           ? muscleGroups[muscleGroups.length - 1].id + 1
           : 1;
-
       setMuscleGroups([...muscleGroups, { id: newId, name: newMuscleGroup }]);
     }
     setNewMuscleGroup("");
   };
 
   const handleChangeName = (name, id) => {
-    console.log("### aktuele name: ", name);
-    console.log("### aktuele id: ", id);
-
     setChangeName(id);
     setNewMuscleGroup(name);
 
     window.scrollTo({ top: 0, behavior: "smooth" });
-
     setTimeout(() => {
       inputRef.current?.focus();
     }, 300);
@@ -72,18 +62,12 @@ export default function MuscleGroups() {
 
   const handleOnDragOver = (e) => {
     e.preventDefault();
-    console.log("### funktionier over: ");
   };
 
   const handleOnDrop = (index) => {
     const copieArray = [...muscleGroups];
     const [update] = copieArray.splice(draggedMuscleGroup, 1);
-
     copieArray.splice(index, 0, update);
-    console.log(
-      "### Nach Einfügen:",
-      copieArray.map((m) => m.name)
-    );
     setMuscleGroups(copieArray);
     setDraggedMuscleGroup(null);
   };
